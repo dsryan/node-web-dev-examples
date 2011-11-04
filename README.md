@@ -1,0 +1,1 @@
+Reading and working through the examples in ["Node Web Development"](http://www.amazon.com/Node-Web-Development-David-Herron/dp/184951514X) by David Herron
