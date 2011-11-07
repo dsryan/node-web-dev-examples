@@ -1,0 +1,11 @@
+<% if (req.a) { %>
+	<p class='result'>
+		<%= req.a %> * <%= req.a %> = <%= req.result %>
+	</p>
+<% } %>
+
+<p>Enter number to square</p>
+<form name='square' action='/square' method='get'>
+	A: <input type='text' name='a' />
+	<input type='submit' value='Submit' />
+</form>
