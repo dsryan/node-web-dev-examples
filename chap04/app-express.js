@@ -1,6 +1,7 @@
 var htutil = require('./htutil');
 var math = require('./math');
 var express = require('express');
+
 var app = express.createServer(
   express.logger()
 );
@@ -34,10 +35,23 @@ app.get('/square', htutil.loadParams, function(req, res){
 
 app.get('/fibonacci', htutil.loadParams, function(req, res){
   if (req.a) {
-    math.fibonacciAsync(Math.floor(req.a), function(val){
-      req.result = val;
-      res.render('fibo.html', {title: "Math Wizard", req: req})
+    var httpreq = require('http').request({
+      port: 3002,
+      host: 'localhost',
+      path: '/fibonacci/'+Math.floor(req.a),
+      method: 'GET'
+    }, function(httpresp){
+      httpresp.on('data', function(chunk){
+        var data = JSON.parse(chunk);
+        req.result = data.result;
+        res.render('fibo.html', {title: "Math Wizard", req: req});
+      });
     });
+    httpreq.end();
+    // math.fibonacciAsync(Math.floor(req.a), function(val){
+    //   req.result = val;
+    //   res.render('fibo.html', {title: "Math Wizard", req: req})
+    // });
   } else {
     res.render('fibo.html', {title: "Math Wizard", req: req})
   }
