@@ -1,0 +1,9 @@
+## node files
+node_modules
+
+## generic files to ignore
+*~          # backup files
+*.lock 
+*.DS_Store  # mac dir file
+*.swp       # vim swap files
+*.out
