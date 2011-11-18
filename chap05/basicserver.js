@@ -27,3 +27,45 @@ exports.createServer = function() {
   }
   return htserver;
 }
+
+var lookupContainer = function(htserver, host, path) {
+  for (var i = 0; i < htserver.basicServer.containers.length; i++) {
+    var container = htserver.basicServer.containers[i];
+    var hostMatches = host.toLowerCase().match(container.host);
+    var pathMatches = path.match(container.path);
+    
+    if (hostMatches !== null && postMatches !== null) {
+      return { container: container, host: hostMatches, path: pathMatches }
+    }
+  }
+  return undefined;
+}
+
+var processHeaders = function(req, res) {
+  req.basicServer.cookies = [];
+  var keys = Object.keys(req.headers);
+  for (var i=0, l = keys.length; i < l;  i++) {
+    var hname = keys[i];
+    var hval = req.headers[hname];
+    
+    if (hname.toLowerCase() === "host") {
+      req.basicServer.host = hval;
+    }
+    if (hname.toLowerCase() === "cookies") {
+      req.basicServer.cookies.push(hval);
+    }
+  }
+}
+
+var dispatchToContainer = function(htserver, req, res) {
+  var container = lookupContainer(htserver, req.basicServer.host, req.basicServer.urlparsed.pathname);
+  if (container !== undefined) {
+    req.basicServer.hostMatches = container.host;
+    req.basicServer.pathMatches = container.path;
+    req.basicServer.container = container.container;
+    //container.container.module.handle(req, res);
+  } else {
+    res.writeHead(404, {'Content-Type':'text/plain'});
+    res.end("no handler found for "+req.basicServer.host+req.basicServer.urlparsed.pathname);
+  }
+}
