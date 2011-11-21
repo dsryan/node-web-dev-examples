@@ -23,7 +23,7 @@ exports.createServer = function() {
     return this.addContainer(host, "/favicon.ico", require('./faviconHandler'), { iconPath: path });
   }
   htserver.docroot = function(host, path, rootPath) {
-    return this.addContainer(host, path, require('./staticHandler'), {docroot: rootPath});
+    return this.addContainer(host, path, require('./staticHandler'), { docroot: rootPath });
   }
   return htserver;
 }
@@ -34,7 +34,7 @@ var lookupContainer = function(htserver, host, path) {
     var hostMatches = host.toLowerCase().match(container.host);
     var pathMatches = path.match(container.path);
     
-    if (hostMatches !== null && postMatches !== null) {
+    if (hostMatches !== null && pathMatches !== null) {
       return { container: container, host: hostMatches, path: pathMatches }
     }
   }
@@ -60,10 +60,11 @@ var processHeaders = function(req, res) {
 var dispatchToContainer = function(htserver, req, res) {
   var container = lookupContainer(htserver, req.basicServer.host, req.basicServer.urlparsed.pathname);
   if (container !== undefined) {
+    console.log('container found');
     req.basicServer.hostMatches = container.host;
     req.basicServer.pathMatches = container.path;
     req.basicServer.container = container.container;
-    //container.container.module.handle(req, res);
+    container.container.module.handle(req, res);
   } else {
     res.writeHead(404, {'Content-Type':'text/plain'});
     res.end("no handler found for "+req.basicServer.host+req.basicServer.urlparsed.pathname);
