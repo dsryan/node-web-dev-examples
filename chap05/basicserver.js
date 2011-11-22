@@ -60,7 +60,6 @@ var processHeaders = function(req, res) {
 var dispatchToContainer = function(htserver, req, res) {
   var container = lookupContainer(htserver, req.basicServer.host, req.basicServer.urlparsed.pathname);
   if (container !== undefined) {
-    console.log('container found');
     req.basicServer.hostMatches = container.host;
     req.basicServer.pathMatches = container.path;
     req.basicServer.container = container.container;

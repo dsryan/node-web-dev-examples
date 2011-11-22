@@ -1,0 +1,11 @@
+body {
+  color: #00c;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  background-color: #cf9;
+}
+
+h1 {
+  color: #ff6;
+  background-color: #090;
+  border:5px solid #0f9;
+}
