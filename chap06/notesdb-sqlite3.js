@@ -37,7 +37,7 @@ exports.setup = function(callback) {
 exports.emptyNote = {'ts':'', author: '', note: ''};
 
 exports.add = function(author, note, callback) {
-  db.run('INSERT INTO notes (ts, suthorm note) '+
+  db.run('INSERT INTO notes (ts, author, note) '+
     'VALUES (?, ?, ?);',
     [ new Date(), author, note],
     function(error) {
@@ -65,11 +65,11 @@ exports.delete = function(ts, callback) {
   );
 }
 
-exports.edit = function(ts, author, callback) {
+exports.edit = function(ts, author, note, callback) {
   db.run('UPDATE notes '+
     'SET ts = ?, author = ?, note = ?'+
     'WHERE ts = ?',
-    [ts, author, note],
+    [ts, author, note, ts],
     function(err) {
       if (err) {
         util.log('FAIL on updating table '+err);
@@ -101,7 +101,7 @@ exports.findNoteById = function(ts, callback) {
   var didOne = false;
   db.each('SELECT * FROM notes WHERE ts = ?',
     [ts],
-    function(err) {
+    function(err, row) {
       if (err) {
         util.log('FAIL to retrieve row '+err);
         callback(err, null);
